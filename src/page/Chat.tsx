@@ -5,9 +5,11 @@ import { socket } from '../App';
 import HeaderChat from '../components/Chats/HeaderChat';
 import InputChat from '../components/Chats/InputChat';
 import Message from '../components/Chats/Message';
+import PopUp from '../components/Chats/PopUp';
 import { useAppSelector } from '../hooks/hooks';
 import { selectUserId } from '../store/auth/authSelectors';
 import {
+  useGetChatUsersQuery,
   useGetUserChatQuery,
   useSendMessageMutation,
 } from '../store/chats/operations';
@@ -15,10 +17,13 @@ import {
 const Chat = () => {
   const { idChat } = useParams();
   const { data, refetch } = useGetUserChatQuery(idChat || '');
+  const { data: ChatUsers } = useGetChatUsersQuery(idChat || '');
   const idUser = useAppSelector(selectUserId);
   const [sendMessage] = useSendMessageMutation();
   const [messages, setMessages] = useState<IMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  console.log(ChatUsers);
 
   const handleSendMessage = (message: string) => {
     if (message) {
@@ -59,7 +64,8 @@ const Chat = () => {
 
   return (
     <div className="w-full relative border-l-8 border-mainBlue">
-      <HeaderChat />
+      <HeaderChat info={ChatUsers} />
+      <PopUp/>
       <ul className="overflow-y-scroll h-full py-28 p-5 flex flex-col gap-2 scrollbar-hide">
         {messages.map(message => (
           <li key={message.id}>

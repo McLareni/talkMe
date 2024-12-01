@@ -17,10 +17,13 @@ export const chatApi = createApi({
   }),
   endpoints: builder => ({
     getUserChats: builder.query<any[], void>({
-      query: () => 'chats',
+      query: () => ({ url: 'chats', method: 'GET' }),
     }),
     getUserChat: builder.query<IMessage[], string>({
       query: idChat => `chats/${idChat}`,
+    }),
+    getChatUsers: builder.query<any[], string>({
+      query: (idChat: string) => `chats/${idChat}/users`,
     }),
     sendMessage: builder.mutation<any, { message: string; idChat: string }>({
       query: ({ message, idChat }) => ({
@@ -36,4 +39,5 @@ export const {
   useGetUserChatsQuery,
   useGetUserChatQuery,
   useSendMessageMutation,
+  useGetChatUsersQuery,
 } = chatApi;

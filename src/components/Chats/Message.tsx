@@ -16,7 +16,7 @@ const Message: React.FC<IProps> = ({ text, isYourMessage }) => {
       })}
     >
       <h2
-        className={clsx('rounded-3xl w-fit p-2', {
+        className={clsx('rounded-3xl max-w-[40%] w-fit p-3 break-words', {
           'bg-[#BCD5FF]': isYourMessage,
           'bg-[#D9D9D9]': !isYourMessage,
         })}

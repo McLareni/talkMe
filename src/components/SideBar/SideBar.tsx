@@ -15,7 +15,9 @@ const SideBar = () => {
 
   return (
     <div className="w-72 h-full bg-mainBlue relative overflow-hidden">
-      <div className="w-full h-16 bg-[#BCD5FF]"></div>
+      <div className="w-full h-16 bg-[#BCD5FF] flex items-center pl-3">
+        <h1 className='text-white font-black text-3xl'>TalkMe</h1>
+      </div>
       <nav className=" ml-5 mt-14">
         <ul className="flex flex-col gap-3">
           <SideBarLink text="Profile" to="/profile" />
