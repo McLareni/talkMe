@@ -17,18 +17,39 @@ export const chatApi = createApi({
   }),
   endpoints: builder => ({
     getUserChats: builder.query<any[], void>({
-      query: () => ({ url: 'chats', method: 'GET' }),
+      query: () => ({
+        url: 'chats',
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      }),
     }),
     getUserChat: builder.query<IMessage[], string>({
-      query: idChat => `chats/${idChat}`,
+      query: idChat => ({
+        url: `chats/${idChat}`,
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      }),
     }),
     getChatUsers: builder.query<any[], string>({
-      query: (idChat: string) => `chats/${idChat}/users`,
+      query: (idChat: string) => ({
+        url: `chats/${idChat}/users`,
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
+      }),
     }),
     sendMessage: builder.mutation<any, { message: string; idChat: string }>({
       query: ({ message, idChat }) => ({
         url: `chats/${idChat}`,
         method: 'POST',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+        },
         body: { message },
       }),
     }),
