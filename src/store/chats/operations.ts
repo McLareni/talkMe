@@ -11,6 +11,7 @@ export const chatApi = createApi({
       const token = (getState() as RootState).auth.accessToken;
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
+        headers.set('ngrok-skip-browser-warning', 'true');
       }
       return headers;
     },
@@ -20,36 +21,23 @@ export const chatApi = createApi({
       query: () => ({
         url: 'chats',
         method: 'GET',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
       }),
     }),
     getUserChat: builder.query<IMessage[], string>({
       query: idChat => ({
         url: `chats/${idChat}`,
         method: 'GET',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
       }),
     }),
     getChatUsers: builder.query<any[], string>({
       query: (idChat: string) => ({
         url: `chats/${idChat}/users`,
-        method: 'GET',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
       }),
     }),
     sendMessage: builder.mutation<any, { message: string; idChat: string }>({
       query: ({ message, idChat }) => ({
         url: `chats/${idChat}`,
         method: 'POST',
-        headers: {
-          'ngrok-skip-browser-warning': 'true',
-        },
         body: { message },
       }),
     }),

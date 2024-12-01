@@ -13,8 +13,12 @@ export let socket: Socket;
 
 function App() {
   useEffect(() => {
-    socket = io(URL);
-
+    socket = io(URL, {
+      extraHeaders: {
+        'ngrok-skip-browser-warning': 'true',
+      },
+    });
+    
     return () => {
       socket.disconnect();
     };
