@@ -1,8 +1,6 @@
 import React from 'react';
 import { FiMoreHorizontal } from 'react-icons/fi';
 
-import PopUp from './PopUp';
-
 interface IProps {
   info?: any[];
 }
