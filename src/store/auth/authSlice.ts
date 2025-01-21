@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { authUser } from './authOperation';
+import { authUser, refreshAccessToken } from './authOperation';
 
 export interface IUser {
   user: { id: number; name: string; email: string; picture: string } | {};
@@ -28,14 +28,16 @@ export const authSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(authUser.fulfilled, (state, action) => {
-      console.log(action.payload);
-
-      state.user = action.payload.user;
-      state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
-      state.isUser = true;
-    });
+    builder
+      .addCase(authUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.accessToken = action.payload.accessToken;
+        state.refreshToken = action.payload.refreshToken;
+        state.isUser = true;
+      })
+      .addCase(refreshAccessToken.fulfilled, (state, action) => {
+        state.accessToken = action.payload;
+      });
   },
 });
 

@@ -9,21 +9,22 @@ import { ILoginArgs, authUser } from '../store/auth/authOperation';
 const LoginPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
   return (
-    <GoogleLogin
-      onSuccess={async credentialResponse => {
-        const userData = jwtDecode(
-          credentialResponse.credential || ''
-        );
-        console.log(userData);
-        
-        await dispatch(authUser(userData as ILoginArgs));
-        navigate('/profile');
-      }}
-      onError={() => {
-        console.log('Login Failed');
-      }}
-    />
+    <div className="w-full h-full flex justify-center items-center bg-loginGradient">
+      <GoogleLogin
+        onSuccess={async credentialResponse => {
+          const userData = jwtDecode(credentialResponse.credential || '');
+
+          await dispatch(authUser(userData as ILoginArgs));
+
+          navigate('/profile');
+        }}
+        onError={() => {
+          console.log('Login Failed');
+        }}
+      />
+    </div>
   );
 };
 export default LoginPage;

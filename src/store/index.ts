@@ -4,6 +4,9 @@ import storage from 'redux-persist/lib/storage';
 
 import authSlice from './auth/authSlice';
 import { chatApi } from './chats/operations';
+import { friendApi } from './friends/operations';
+import onlineUsersSlice from './onlineUsers/onlineUsersSlice';
+import { userApi } from './user/operations';
 
 const persistConfig = {
   key: 'root',
@@ -14,6 +17,9 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authSlice,
   [chatApi.reducerPath]: chatApi.reducer,
+  onlineUsers: onlineUsersSlice,
+  [friendApi.reducerPath]: friendApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
 });
 
 const store = configureStore({
@@ -23,7 +29,10 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
-    }).concat(chatApi.middleware),
+    })
+      .concat(chatApi.middleware)
+      .concat(friendApi.middleware)
+      .concat(userApi.middleware),
 });
 
 export const persistor = persistStore(store);

@@ -7,6 +7,7 @@ interface IMessage {
   id?: number;
   message?: string;
   idChat?: number;
-  idUser?: number;
-  sentTime?: Date;
+  idUser: number;
+  sentTime: string;
+  isSented?: 'NOT' | 'ERROR';
 }

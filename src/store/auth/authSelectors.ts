@@ -4,3 +4,4 @@ import { IUser } from './authSlice';
 export const selectIsUser = (state: RootState): boolean => state.auth.isUser;
 export const selectUser = (state: RootState): IUser => state.auth;
 export const selectUserId = (state: RootState): number => state.auth.user.id;
+export const selectUserPhoto = (state: RootState): string => state.auth.user.picture;

@@ -1,83 +1,205 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { socket } from '../App';
+import userPlaceholder from '../../public/user-placeholder.png';
 import HeaderChat from '../components/Chats/HeaderChat';
 import InputChat from '../components/Chats/InputChat';
-import Message from '../components/Chats/Message';
+import ListMessage from '../components/Chats/ListMessage';
 import PopUp from '../components/Chats/PopUp';
-import { useAppSelector } from '../hooks/hooks';
+import { socket } from '../components/Layouts/Layouts';
+import Modal from '../components/UI/Modal';
+import { useAppDispatch, useAppSelector } from '../hooks/hooks';
 import { selectUserId } from '../store/auth/authSelectors';
 import {
+  chatApi,
   useGetChatUsersQuery,
-  useGetUserChatQuery,
   useSendMessageMutation,
 } from '../store/chats/operations';
+import { deleteChat } from '../utils/request';
 
 const Chat = () => {
   const { idChat } = useParams();
-  const { data, refetch } = useGetUserChatQuery(idChat || '');
-  const { data: ChatUsers } = useGetChatUsersQuery(idChat || '');
-  const idUser = useAppSelector(selectUserId);
-  const [sendMessage] = useSendMessageMutation();
+  const [emojiIsOpen, setEmojiIsOpen] = useState<boolean>(false);
+  const [popUpIsOpen, setPopUpIsOpen] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const { data: ChatUser } = useGetChatUsersQuery(idChat || '');
+  const [sendMessage, {}] = useSendMessageMutation();
+
   const [messages, setMessages] = useState<IMessage[]>([]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  console.log(ChatUsers);
+  const navigate = useNavigate();
 
-  const handleSendMessage = (message: string) => {
+  useEffect(() => {
+    setMessages([]);
+  }, [idChat]);
+
+  const idUser = useAppSelector(selectUserId);
+
+  const handleSendMessage = async (message: string) => {
     if (message) {
-      sendMessage({ message, idChat: idChat?.toString() || '' })
-        .unwrap()
-        .then(() => {
-          socket.emit('sendMessage', idChat, message);
-        })
-        .catch(error => {
-          console.error('Message sending failed:', error);
+      const nowTime = new Date().toISOString();
+
+      const tempMessage = {
+        message,
+        idChat,
+        idUser,
+        sentTime: nowTime,
+        isSented: 'NOT',
+      } as IMessage;
+
+      setMessages(prev => [
+        { ...tempMessage },
+        ...prev.map(msg => ({ ...msg })),
+      ]);
+
+      setTimeout(async () => {
+        const newMessage = await sendMessage({
+          message,
+          idChat: idChat || '',
+          time: nowTime,
         });
+
+        if (!newMessage?.data?.sentedMessage) {
+          setMessages(prev => {
+            const newMessageList = [
+              ...prev.map(msg => ({ ...msg })),
+            ] as IMessage[];
+            const indexUnsentedMsg = newMessageList.findIndex(
+              msg => msg.sentTime.toString() === nowTime
+            );
+
+            newMessageList[indexUnsentedMsg] = {
+              ...tempMessage,
+              isSented: 'ERROR',
+            };
+
+            return newMessageList;
+          });
+        } else {
+          socket.emit('sendMessage', idChat, newMessage.data.sentedMessage);
+        }
+      }, 0);
+
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 
-  useEffect(() => {
-    if (data) {
-      setMessages(data);
-    }
-  }, [data]);
+  const handleReSendMessage = (time: string, text: string) => {
+    setMessages(prev => {
+      const newMessageList = [...prev.map(msg => ({ ...msg }))] as IMessage[];
+      const indexUnsentedMsg = newMessageList.findIndex(
+        msg => msg.sentTime.toString() === time
+      );
 
-  useEffect(() => {
-    socket.emit('joinChat', idChat);
+      newMessageList.splice(indexUnsentedMsg, 1);
 
-    socket.on('message', () => {
-      refetch();
+      return newMessageList;
     });
 
-    return () => {
-      socket.off('message');
-    };
-  }, []);
+    handleSendMessage(text);
+  };
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  const changeMessageList = (newMessage: IMessage | IMessage[]) => {
+    if (Array.isArray(newMessage)) {
+      setMessages([...newMessage]);
+    } else {
+      setMessages(prev => {
+        const newMessageList = [...prev.map(msg => ({ ...msg }))] as IMessage[];
+        const indexUnsentedMsg = newMessageList.findIndex(
+          msg => msg.sentTime.toString() === newMessage.sentTime.toString()
+        );
+
+        if (indexUnsentedMsg !== -1) {
+          newMessageList[indexUnsentedMsg] = { ...newMessage };
+          console.log(newMessageList);
+
+          return newMessageList;
+        } else {
+          return [{ ...newMessage }, ...newMessageList];
+        }
+      });
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
     }
-  }, [messages]);
+  };
+
+  const handleDeleteChat = async () => {
+    const response = await deleteChat(idChat || '');
+
+    if (response) {
+      await dispatch(
+        chatApi.endpoints.getUserChats.initiate(undefined, {
+          forceRefetch: true,
+        })
+      );
+      navigate('/chats/');
+    }
+  };
 
   return (
-    <div className="w-full relative border-l-8 border-mainBlue">
-      <HeaderChat info={ChatUsers} />
-      <PopUp/>
-      <ul className="overflow-y-scroll h-full py-28 p-5 flex flex-col gap-2 scrollbar-hide">
-        {messages.map(message => (
-          <li key={message.id}>
-            <Message
-              text={message.message || ''}
-              isYourMessage={message.idUser === idUser}
-            />
-          </li>
-        ))}
-        <div ref={messagesEndRef} />
-      </ul>
-      <InputChat sendMessageFn={message => handleSendMessage(message)} />
+    <div
+      id="window"
+      className="w-full h-screen relative border-l-8 border-mainBlue"
+    >
+      <HeaderChat
+        info={ChatUser && ChatUser[0]}
+        openPopUp={() => setPopUpIsOpen(true)}
+      />
+      <PopUp
+        isOpen={popUpIsOpen}
+        onClose={() => setPopUpIsOpen(false)}
+        deleteChat={() => setShowModal(true)}
+      />
+      <ListMessage
+        key={idChat}
+        messages={messages}
+        messagesEndRef={messagesEndRef}
+        saveMessages={changeMessageList}
+        reSendMessage={handleReSendMessage}
+        photoFriend={
+          (ChatUser && ChatUser[0]?.ChatUser?.picture) || userPlaceholder
+        }
+      />
+      <InputChat
+        sendMessageFn={message => handleSendMessage(message)}
+        emojiIsOpen={emojiIsOpen}
+        openEmoji={() => setEmojiIsOpen(prev => !prev)}
+        closeEmoji={() => setEmojiIsOpen(false)}
+      />
+      {showModal && (
+        <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+          <div className="px-8  py-5 text-center">
+            <h2 className="text-xl">
+              Are you sure you want to delete the chat?
+            </h2>
+            <h2 className="text-xl">
+              The entire chat history will be deleted.
+            </h2>
+            <p className="text-xl mt-3">Delete a chat?</p>
+            <div className="w-full flex justify-around mt-5">
+              <button
+                className="rounded-xl text-center w-20 h-8 border border-mainBlue text-mainBlue"
+                onClick={() => setShowModal(false)}
+              >
+                No
+              </button>
+              <button
+                className="rounded-xl text-center w-20 h-8 bg-mainBlue text-white"
+                onClick={handleDeleteChat}
+              >
+                Yes
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

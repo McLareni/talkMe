@@ -19,11 +19,29 @@ export const authUser = createAsyncThunk(
         console.log('Failed login');
       }
 
-      console.log(response.data);
-
       setToken(response.data.accessToken);
-      console.log('Auth API response:', response.data);
       return response.data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+);
+
+export const refreshAccessToken = createAsyncThunk(
+  'refreshToken',
+  async (token: string) => {
+    try {
+      const response = await axios.post('/refresh-token', {
+        refreshToken: token,
+      });
+
+      if (response.status !== 200) {
+        console.log('Failed login');
+      }
+
+      console.log('new token');
+
+      return response.data.accessToken;
     } catch (err) {
       console.log(err);
     }

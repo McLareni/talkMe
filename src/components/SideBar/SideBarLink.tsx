@@ -19,7 +19,6 @@ const SideBarLink: React.FC<IProps> = ({ text, to }) => {
             { 'after:w-[120%]': isActive }
           )
         }
-        end
       >
         {text}
       </NavLink>
