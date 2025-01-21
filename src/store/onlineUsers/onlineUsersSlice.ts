@@ -4,7 +4,7 @@ export const onlineUsersSlice = createSlice({
   name: 'onlineUsers',
   initialState: [] as number[],
   reducers: {
-    setOnlineUser: (state, action: PayloadAction<number[]>) => {
+    setOnlineUser: (_, action: PayloadAction<number[]>) => {
       return action.payload;
     },
   },
