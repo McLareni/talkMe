@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import userPlaceholder from '../../public/user-placeholder.png';
 import { Modal } from '../components/UI/Modal';
 import { useAppSelector } from '../hooks/hooks';
 import { selectUserId } from '../store/auth/authSelectors';
-import { useGetUserChatsQuery } from '../store/chats/operations';
 import {
-  friendApi,
   useConfirmRequestMutation,
   useRejectRequestMutation,
 } from '../store/friends/operations';
@@ -29,9 +26,9 @@ const UserProfile = () => {
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false);
   const navigation = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [confirmRequest, { data: statusConfirmRequest }] =
+  const [confirmRequest] =
     useConfirmRequestMutation();
-  const [rejectRequest, { data: statusRejectRequest }] =
+  const [rejectRequest] =
     useRejectRequestMutation();
 
   const handleConfirmRequest = async () => {
@@ -43,10 +40,6 @@ const UserProfile = () => {
     await rejectRequest({ friendId: Number(idUser), userId: myUserId });
     refetch();
   };
-
-  const { data: chats } = useGetUserChatsQuery();
-
-  const idChat = chats?.find(chat => chat.users.id === idUser);
 
   useEffect(() => {
     setUser(data);
@@ -64,10 +57,6 @@ const UserProfile = () => {
   const handleCreateChat = async () => {
     const chat = await createChat(Number(idUser), inputRef.current?.value);
     navigation(`/chats/${chat.id}`);
-  };
-
-  const handleShowModal = () => {
-    setModalIsOpen(true);
   };
 
   if (!user) {

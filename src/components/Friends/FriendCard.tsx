@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { FaPaperPlane, FaTrash } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '../../hooks/hooks';
 import { selectUserId } from '../../store/auth/authSelectors';
@@ -20,15 +20,15 @@ interface IProps {
   isRequest?: number;
 }
 
-const FriendCard: React.FC<IProps> = ({ user, idChat, isRequest }) => {
+const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false);
   const [deleteFriendModalIsOpen, setDeleteFriendModalIsOpen] = useState(false);
-  const [confirmRequest, { data: statusConfirmRequest }] =
+  const [confirmRequest] =
     useConfirmRequestMutation();
-  const [rejectRequest, { data: statusRejectRequest }] =
+  const [rejectRequest] =
     useRejectRequestMutation();
-  const [deleteFriend, { data: statusDeleteFriend }] =
+  const [deleteFriend] =
     useDeleteFriendMutation();
   const userId = useAppSelector(selectUserId);
 
