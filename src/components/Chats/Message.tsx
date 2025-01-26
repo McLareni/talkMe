@@ -23,8 +23,8 @@ const Message: React.FC<IProps> = ({
   time,
   userName,
   isYourMessage,
-  friendPhoto,
-  yourPhoto,
+  // friendPhoto,
+  // yourPhoto,
   sented,
   reSend,
 }) => {

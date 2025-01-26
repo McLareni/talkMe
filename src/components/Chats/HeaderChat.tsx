@@ -3,7 +3,6 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 
 import clsx from 'clsx';
 
-import userPlaceholder from '../../../public/user-placeholder.png';
 import { useAppSelector } from '../../hooks/hooks';
 import { selectOnlineUsers } from '../../store/onlineUsers/onlineUsersSelectors';
 import ProfileImage from '../UI/ProfileImage';
