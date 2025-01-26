@@ -27,14 +27,14 @@ const MyFriend = () => {
   return (
     <main className="p-4">
       <div className="flex gap-6">
-        <h2 className="font-black text-xl text-fiolet">
+        <h2 className="font-black text-xl text-mainBlue">
           Friends: {friends?.length || 0}
         </h2>
         <InputFilter
           filter={filter}
           changeFilter={handleChangeFilter}
           width="72"
-          color="fiolet"
+          color="mainBlue"
         />
       </div>
       <ListFriend friends={filteredFriend} />

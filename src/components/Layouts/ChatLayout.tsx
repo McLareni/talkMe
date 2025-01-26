@@ -27,12 +27,12 @@ const ChatLayout = () => {
   };
 
   if (spinner) {
-    return <h1>Spinner</h1>;
+    return <h1>Loading...</h1>;
   }
 
   return (
     <>
-      <aside className="w-1/4 min-w-[300px] pt-5 flex flex-col items-center">
+      <aside className="w-1/3 min-w-[300px] pt-5 flex flex-col items-center">
         <InputFilter
           filter={filter}
           changeFilter={handleChangeFilter}

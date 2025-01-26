@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { Navigate, createBrowserRouter } from 'react-router-dom';
 
 import ChatLayout from '../components/Layouts/ChatLayout.tsx';
 import FriendLayout from '../components/Layouts/FriendLayout.tsx';
@@ -6,6 +6,7 @@ import Chat from '../page/Chat.tsx';
 import ChatNotSelected from '../page/ChatNotSelected.tsx';
 import LoginPage from '../page/Login.tsx';
 import MyFriend from '../page/MyFriend.tsx';
+import MyProfile from '../page/MyProfile.tsx';
 import MyRequest from '../page/MyRequests.tsx';
 import UserProfile from '../page/UserProfile.tsx';
 import LoginRouter from './privateRouter/LoginRouter.tsx';
@@ -15,8 +16,9 @@ const router = createBrowserRouter(
     {
       path: '/',
       element: <LoginRouter />,
+      errorElement: <Navigate to="/" />,
       children: [
-        { path: '/profile', element: <h1>Profile</h1> },
+        { path: '/profile', element: <MyProfile /> },
         {
           path: '/chats',
           element: <ChatLayout />,

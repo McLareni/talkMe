@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 
 import { useDebounce } from 'use-debounce';
 
-import userPlaceholder from '../../../public/user-placeholder.png';
 import { useAppSelector } from '../../hooks/hooks';
 import { selectUserId } from '../../store/auth/authSelectors';
 import { useGetNewFriendsQuery } from '../../store/friends/operations';
 import InputFilter from '../UI/InputFilter';
+import ProfileImage from '../UI/ProfileImage';
 
 const FriendSearch = () => {
   const userID = useAppSelector(selectUserId);
@@ -42,11 +42,12 @@ const FriendSearch = () => {
                 to={`/user/${user.id}`}
                 className="flex items-center hover:cursor-pointer z-20"
               >
-                <div className="relative h-10 w-10">
-                  <img
+                <div className="relative h-10 w-10 rounded-full overflow-hidden">
+                  <ProfileImage letter={user.name[0]}/>
+                  {/* <img
                     className="h-full w-full rounded-full object-cover"
                     src={user.picture || userPlaceholder}
-                  />
+                  /> */}
                 </div>
 
                 <div className="ml-2">

@@ -40,7 +40,7 @@ const InputChat: React.FC<IProps> = ({
   };
 
   return (
-    <div className="w-full h-24 flex justify-between bg-fiolet p-8">
+    <div className="w-full h-24 flex justify-between bg-mainBlue p-8">
       <input
         ref={inputRef}
         onKeyDown={handleKeyDown}

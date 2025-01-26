@@ -5,10 +5,12 @@ import { TbReload } from 'react-icons/tb';
 import clsx from 'clsx';
 
 import { getTime } from '../../utils/formatTime';
+import ProfileImage from '../UI/ProfileImage';
 
 interface IProps {
   text: string;
   time: string;
+  userName: string
   isYourMessage: boolean;
   friendPhoto: string;
   yourPhoto: string;
@@ -19,6 +21,7 @@ interface IProps {
 const Message: React.FC<IProps> = ({
   text,
   time,
+  userName,
   isYourMessage,
   friendPhoto,
   yourPhoto,
@@ -57,10 +60,11 @@ const Message: React.FC<IProps> = ({
         >
           {text}
         </h2>
-        <img
+        <div className='w-7 h-7 rounded-full overflow-hidden'><ProfileImage letter={userName[0]}/></div>
+        {/* <img
           src={isYourMessage ? yourPhoto : friendPhoto}
           className="w-7 h-7 rounded-full"
-        />
+        /> */}
         {sented === 'NOT' && (
           <IoPaperPlane className="rotate-45 ml-2 fill-mainBlue" />
         )}

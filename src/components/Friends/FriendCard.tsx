@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { FaPaperPlane, FaTrash } from 'react-icons/fa';
+import { FaCheck, FaPaperPlane, FaTrash, FaUserMinus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import { useAppSelector } from '../../hooks/hooks';
@@ -12,7 +12,7 @@ import {
 } from '../../store/friends/operations';
 import { checkStatusChat, createChat } from '../../utils/request';
 import Modal from '../UI/Modal';
-import userPlaceholder from '/user-placeholder.png';
+import ProfileImage from '../UI/ProfileImage';
 
 interface IProps {
   user: IFriend;
@@ -24,12 +24,9 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [inputModalIsOpen, setInputModalIsOpen] = useState(false);
   const [deleteFriendModalIsOpen, setDeleteFriendModalIsOpen] = useState(false);
-  const [confirmRequest] =
-    useConfirmRequestMutation();
-  const [rejectRequest] =
-    useRejectRequestMutation();
-  const [deleteFriend] =
-    useDeleteFriendMutation();
+  const [confirmRequest] = useConfirmRequestMutation();
+  const [rejectRequest] = useRejectRequestMutation();
+  const [deleteFriend] = useDeleteFriendMutation();
   const userId = useAppSelector(selectUserId);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,9 +39,8 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
   };
 
   const handleOpenUserProfile = (e: HTMLElement) => {
-    console.log(e);
 
-    if (e.tagName === 'DIV' || e.tagName === 'IMG') {
+    if (e.tagName === 'DIV' || e.tagName==='H2') {
       navigation(`/user/${user.id}`);
     }
   };
@@ -73,65 +69,73 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
   };
 
   return (
-    <div
-      className="w-56 p-4 bg-mainBlue rounded-[20px] text-center"
-      onClick={e => handleOpenUserProfile(e.target as HTMLElement)}
-    >
-      <img
+    <>
+      <div
+        className="w-56 p-4 bg-ligthBlue rounded-[20px] text-center card"
+        onClick={e => handleOpenUserProfile(e.target as HTMLElement)}
+      >
+        <div className="rounded-[15px] w-full aspect-square overflow-hidden text-[80px]">
+          <ProfileImage letter={user.name[0]} />
+        </div>
+        {/* <img
         src={user.picture || userPlaceholder}
         className="rounded-[15px] w-full"
         width="192"
         height="192"
-      />
-      <h2 className="text-customWhite font-semibold">{user.name}</h2>
-      <div className="w-full text-center text-white font-semibold flex flex-col items-center gap-2">
-        {isRequest ? (
-          <>
-            <button
-              onClick={handleConfirmRequest}
-              className="w-3/4 rounded-[5px] bg-ligthBlue flex gap-3 items-center justify-center p-1"
-            >
-              Сonfirm
-            </button>
-            <button
-              onClick={handleRejectRequest}
-              className="w-3/4 rounded-[5px] bg-ligthBlue flex gap-3 items-center justify-center p-1"
-            >
-              Reject
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={handleOpenChat}
-              className="w-3/4 rounded-[5px] bg-ligthBlue flex gap-3 items-center justify-center p-1"
-            >
-              Message <FaPaperPlane className="w-4 h-4 fill-white" />
-            </button>
-            <button
-              onClick={() => setDeleteFriendModalIsOpen(true)}
-              className="w-3/4 rounded-[5px] bg-ligthBlue flex gap-3 items-center justify-center p-1"
-            >
-              Remove <FaTrash className="w-4 h-4 fill-white" />
-            </button>
-          </>
-        )}
+      /> */}
+        <h2 className="text-customWhite font-semibold my-2">{user.name}</h2>
+        <div className="w-full text-center text-white font-semibold flex flex-col items-center gap-2">
+          {isRequest ? (
+            <>
+              <button
+                onClick={handleConfirmRequest}
+                className="w-32 rounded-[5px] bg-mainBlue flex gap-3 items-center justify-center p-1 hover:bg-fiolet"
+              >
+                Accept
+                <FaCheck className="w-4 h-4" />
+              </button>
+              <button
+                onClick={handleRejectRequest}
+                className="w-32 rounded-[5px] bg-mainBlue flex gap-3 items-center justify-center p-1 hover:bg-fiolet"
+              >
+                Reject
+                <FaUserMinus className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={handleOpenChat}
+                className="w-3/4 rounded-[5px] bg-mainBlue flex gap-3 items-center justify-center p-1 hover:bg-fiolet"
+              >
+                Message <FaPaperPlane className="w-4 h-4 fill-white" />
+              </button>
+              <button
+                onClick={() => setDeleteFriendModalIsOpen(true)}
+                className="w-3/4 rounded-[5px] bg-mainBlue flex gap-3 items-center justify-center p-1 hover:bg-fiolet"
+              >
+                Remove <FaTrash className="w-4 h-4 fill-white" />
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       {modalIsOpen && (
         <Modal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
-          <div className="px-8  py-5 text-center">
-            <h2 className="text-xl">You don't have a chat with this user.</h2>
-            <p className="text-xl mt-2">Create a chat?</p>
+          <div className="px-8 py-5 text-center w-96">
+            <h2 className="text-xl text-mainBlue font-semibold w-60 text-center mx-auto">
+              You don't have a chat with this user yet. Want to create a chat?
+            </h2>
             <div className="w-full flex justify-around mt-5">
               <button
-                className="rounded-xl text-center w-20 h-8 border border-mainBlue text-mainBlue"
+                className="rounded-xl text-center w-32 h-8 bg-mainBlue text-white"
                 onClick={() => setModalIsOpen(false)}
               >
                 No
               </button>
               <button
-                className="rounded-xl text-center w-20 h-8 bg-mainBlue text-white"
+                className="rounded-xl text-center w-32 h-8 text-white bg-fiolet"
                 onClick={() => setInputModalIsOpen(true)}
               >
                 Yes
@@ -146,22 +150,24 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
           isOpen={inputModalIsOpen}
           onClose={() => setInputModalIsOpen(false)}
         >
-          <div className="px-8  py-5 text-center">
-            <h2 className="text-xl">Enter chat name</h2>
+          <div className="px-8 py-5 text-center">
+            <h2 className="text-xl text-mainBlue font-semibold">
+              Enter chat name
+            </h2>
             <input
               ref={inputRef}
               type="text"
               className="border border-mainBlue mt-3"
             />
-            <div className="w-full flex justify-around mt-5">
+            <div className="w-full flex  gap-3 justify-around mt-5">
               <button
-                className="rounded-xl text-center w-20 h-8 border border-mainBlue text-mainBlue"
+                className="rounded-xl text-center w-32 h-8 bg-mainBlue text-white"
                 onClick={() => setInputModalIsOpen(false)}
               >
                 Back
               </button>
               <button
-                className="rounded-xl text-center w-20 h-8 bg-mainBlue text-white"
+                className="rounded-xl text-center w-32 h-8 bg-fiolet text-white"
                 onClick={handleCreateChat}
               >
                 Save
@@ -179,19 +185,19 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
           }}
         >
           <div className="px-8  py-5 text-center">
-            <h2 className="text-xl">Do you really want to delete a friend? </h2>
-            <p className="text-md text-gray-600">
+            <h2 className="text-xl text-mainBlue font-semibold">Do you really want to delete a friend? </h2>
+            <p className="text-md text-mainBlue">
               The chat and all messages with this friend will be deleted too
             </p>
             <div className="w-full flex justify-around mt-5">
               <button
-                className="rounded-xl text-center w-20 h-8 border border-mainBlue text-mainBlue"
+                className="rounded-xl text-center w-32 h-8 bg-mainBlue text-white"
                 onClick={() => setDeleteFriendModalIsOpen(false)}
               >
                 No
               </button>
               <button
-                className="rounded-xl text-center w-20 h-8 bg-mainBlue text-white"
+                className="rounded-xl text-center w-32 h-8 bg-fiolet text-white"
                 onClick={handleDeleteFriend}
               >
                 Yes
@@ -200,7 +206,7 @@ const FriendCard: React.FC<IProps> = ({ user, isRequest }) => {
           </div>
         </Modal>
       )}
-    </div>
+    </>
   );
 };
 

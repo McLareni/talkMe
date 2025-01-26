@@ -127,6 +127,7 @@ const ListMessage: React.FC<IProps> = ({
               {groupedMessages[time].map(message => (
                 <li key={message.sentTime}>
                   <Message
+                    userName={message.name}
                     sented={message.isSented}
                     text={message.message || ''}
                     time={message.sentTime}

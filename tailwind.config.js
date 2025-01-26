@@ -6,10 +6,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        mainBlue: '#6DA0F9',
-        fiolet: '#934BFF',
+        mainBlue: '#5C6BC0',
+        fiolet: '#9557B1',
         customWhite: '#FBFBFB',
         ligthBlue: '#BCD5FF',
+        gray: '#BCC3D1',
       },
       backgroundImage: {
         loginGradient:

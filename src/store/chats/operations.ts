@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import { URL } from '../../axiosConfig';
-import { ILoginArgs, refreshAccessToken } from '../auth/authOperation';
+import { refreshAccessToken } from '../auth/authOperation';
 import { RootState } from '../index';
 
 let isRefreshReload = false;
@@ -89,7 +89,7 @@ export const chatApi = createApi({
         }
       },
     }),
-    getChatUsers: builder.query<{ ChatUser: ILoginArgs }[], string>({
+    getChatUsers: builder.query<{ ChatUser: IFriend }[], string>({
       query: (idChat: string) => ({
         url: `chats/${idChat}/users`,
       }),

@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import userPlaceholder from '../../../public/user-placeholder.png';
 import { useAppSelector } from '../../hooks/hooks';
 import { selectOnlineUsers } from '../../store/onlineUsers/onlineUsersSelectors';
+import ProfileImage from '../UI/ProfileImage';
 
 interface IProps {
   info?: any;
@@ -14,21 +15,25 @@ interface IProps {
 
 const HeaderChat: React.FC<IProps> = ({ info, openPopUp }) => {
   const onlineUsers = useAppSelector(selectOnlineUsers);
-  const isOnline = onlineUsers.find(user => user === info?.ChatUser.id)
+  const isOnline = onlineUsers.find(user => user === info?.ChatUser.id);
 
+  console.log(info);
   return (
     <>
-      <div className="w-full h-24 bg-fiolet flex justify-between items-center px-3">
+      <div className="w-full h-24 bg-mainBlue flex justify-between items-center px-3">
         <div className="flex gap-4">
-          <div className='relative w-16 h-16'>
-            <img
+          <div className="relative w-16 h-16">
+            <div className="rounded-full w-full h-full overflow-hidden text-[25px]">
+              <ProfileImage letter={info?.ChatUser.name[0]} />
+            </div>
+            {/* <img
               src={info?.ChatUser.picture || userPlaceholder}
               className="rounded-full w-full h-full"
-            />
+            /> */}
             <div
               className={clsx(
                 'w-4 h-4 rounded-full absolute bottom-0 right-0',
-                isOnline ? 'bg-green-500' : 'bg-gray-200 border border-gray-700'
+                isOnline ? 'bg-green-500 border border-gray' : ''
               )}
             ></div>
           </div>

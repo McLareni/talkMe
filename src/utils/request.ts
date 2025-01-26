@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import { refreshAccessToken } from '../store/auth/authOperation';
 import store from '../store/index';
 
 const createChat = async (idFriend: number, title: any) => {
@@ -66,20 +67,27 @@ const createFriendRequest = async (userId: number, friendId: string) => {
 
 const checkStatusChat = async (idUser: number, idFriend: number) => {
   const token = store.getState().auth.accessToken;
+  const refreshToken = store.getState().auth.refreshToken;
 
   try {
     const response = await axios.get(
-      `chats/checkChat?idUser=${idUser}&idFriend=${idFriend}`,
+      `/chats/check-chat?idUser=${idUser}&idFriend=${idFriend}`,
       {
         headers: { Authorization: 'Bearer ' + token },
       }
     );
 
-    if (response.status !== 200) {
-      return new Error('Failed check status');
+    if (response.status === 403) {
+      const refreshTokenResponse = await store.dispatch(
+        refreshAccessToken(refreshToken)
+      );
+
+      if (refreshAccessToken.fulfilled.match(refreshTokenResponse)) {
+        checkStatusChat(idUser, idFriend);
+      }
     }
 
-    return response.data;
+    return response.data.idChat;
   } catch (err) {
     console.log(err);
   }

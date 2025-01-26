@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { FaRectangleXmark } from 'react-icons/fa6'
 
 import clsx from 'clsx';
 
@@ -62,11 +63,12 @@ export const Modal: React.FC<ModalProps> = ({ children, isOpen, onClose }) => {
 
       <div
         className={clsx(
-          `relative z-10 rounded-[20px] shadow-lg bg-white transition-all`,
+          `relative z-10 rounded-[20px] shadow-lg bg-white transition-all border-2 border-mainBlue pt-4`,
           { 'scale-100': isOpenModal, 'scale-75': !isOpenModal }
         )}
         onClick={e => e.stopPropagation()}
       >
+        <FaRectangleXmark onClick={onClose} className='absolute right-4 top-2 fill-mainBlue w-7 h-7 hover:cursor-pointer'/>
         {children}
       </div>
     </div>,

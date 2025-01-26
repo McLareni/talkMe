@@ -24,6 +24,7 @@ export const userApi = createApi({
         url: `user/${idUser}`,
         method: 'GET',
       }),
+      keepUnusedDataFor: 0,
     }),
   }),
 });

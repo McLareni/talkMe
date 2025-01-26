@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import { authUser, refreshAccessToken } from './authOperation';
 
 export interface IUser {
-  user: { id: number; name: string; email: string; picture: string } | {};
+  user?: { id: number; name: string; email: string; picture: string };
   accessToken?: string;
   refreshToken?: string;
   isUser: boolean;
 }
 
 const initialState: IUser = {
-  user: {},
+  user: undefined,
   accessToken: undefined,
   refreshToken: undefined,
   isUser: false,
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logOut: state => {
-      state.user = {};
+      state.user = undefined;
       state.accessToken = undefined;
       state.refreshToken = undefined;
       state.isUser = false;

@@ -156,6 +156,7 @@ const Chat = () => {
         isOpen={popUpIsOpen}
         onClose={() => setPopUpIsOpen(false)}
         deleteChat={() => setShowModal(true)}
+        user={ChatUser && ChatUser[0].ChatUser}
       />
       <ListMessage
         key={idChat}
@@ -164,7 +165,7 @@ const Chat = () => {
         saveMessages={changeMessageList}
         reSendMessage={handleReSendMessage}
         photoFriend={
-          (ChatUser && ChatUser[0]?.ChatUser?.picture) || userPlaceholder
+          (ChatUser && ChatUser[0].ChatUser.picture) || userPlaceholder
         }
       />
       <InputChat
@@ -175,23 +176,23 @@ const Chat = () => {
       />
       {showModal && (
         <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-          <div className="px-8  py-5 text-center">
-            <h2 className="text-xl">
+          <div className="px-8 py-5 text-center">
+            <h2 className="text-xl text-mainBlue font-semibold">
               Are you sure you want to delete the chat?
             </h2>
-            <h2 className="text-xl">
+            <h2 className="text-base text-mainBlue font-semibold">
               The entire chat history will be deleted.
             </h2>
-            <p className="text-xl mt-3">Delete a chat?</p>
+            <p className="text-xl mt-3 text-mainBlue font-semibold">Delete a chat?</p>
             <div className="w-full flex justify-around mt-5">
               <button
-                className="rounded-xl text-center w-20 h-8 border border-mainBlue text-mainBlue"
+                className="rounded-xl text-center w-32 h-8 bg-mainBlue text-white"
                 onClick={() => setShowModal(false)}
               >
                 No
               </button>
               <button
-                className="rounded-xl text-center w-20 h-8 bg-mainBlue text-white"
+                className="rounded-xl text-center w-32 h-8 bg-fiolet text-white"
                 onClick={handleDeleteChat}
               >
                 Yes
