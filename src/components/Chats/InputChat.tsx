@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaPaperPlane, FaSmile } from 'react-icons/fa';
 
 import clsx from 'clsx';
@@ -19,11 +19,30 @@ const InputChat: React.FC<IProps> = ({
   closeEmoji,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    let timer: any;
+    if (error) {
+      timer = setTimeout(() => {
+        setError(false);
+      }, 2000);
+    }
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [error]);
 
   const handleSend = () => {
-    sendMessageFn(inputRef.current?.value || '');
-    if (inputRef.current) {
-      inputRef.current.value = '';
+    if ((inputRef.current?.value || '').length > 500) {
+      setError(true);
+    } else {
+      setError(false);
+      sendMessageFn(inputRef.current?.value || '');
+      if (inputRef.current) {
+        inputRef.current.value = '';
+      }
     }
   };
 
@@ -40,13 +59,18 @@ const InputChat: React.FC<IProps> = ({
   };
 
   return (
-    <div className="w-full h-24 flex justify-between bg-mainBlue p-8">
+    <div className="w-full h-24 flex justify-between gap-7 bg-mainBlue p-8 relative">
+      {error && (
+        <p className="absolute top-2 left-8 text-red-600 text-sm">
+          Max length message 500
+        </p>
+      )}
       <input
         ref={inputRef}
         onKeyDown={handleKeyDown}
         type="text"
         placeholder="Write a message..."
-        className="bg-transparent placeholder:text-white text-white text-xl font-semibold focus:outline-none"
+        className="bg-transparent placeholder:text-white text-white text-xl font-semibold focus:outline-none flex-1"
       />
       <div className="flex gap-x-3 items-center">
         <EmojiPickerCustom
