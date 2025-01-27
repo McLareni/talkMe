@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import userPlaceholder from '../../public/user-placeholder.png';
 import HeaderChat from '../components/Chats/HeaderChat';
 import InputChat from '../components/Chats/InputChat';
 import ListMessage from '../components/Chats/ListMessage';
@@ -25,7 +24,7 @@ const Chat = () => {
   const dispatch = useAppDispatch();
 
   const { data: ChatUser } = useGetChatUsersQuery(idChat || '');
-  const [sendMessage, {}] = useSendMessageMutation();
+  const [sendMessage] = useSendMessageMutation();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
 
@@ -117,7 +116,6 @@ const Chat = () => {
 
         if (indexUnsentedMsg !== -1) {
           newMessageList[indexUnsentedMsg] = { ...newMessage };
-          console.log(newMessageList);
 
           return newMessageList;
         } else {
@@ -164,9 +162,7 @@ const Chat = () => {
         messagesEndRef={messagesEndRef}
         saveMessages={changeMessageList}
         reSendMessage={handleReSendMessage}
-        photoFriend={
-          (ChatUser && ChatUser[0].ChatUser.picture) || userPlaceholder
-        }
+        nameFrined={(ChatUser && ChatUser[0].ChatUser?.name) || ''}
       />
       <InputChat
         sendMessageFn={message => handleSendMessage(message)}
@@ -183,7 +179,9 @@ const Chat = () => {
             <h2 className="text-base text-mainBlue font-semibold">
               The entire chat history will be deleted.
             </h2>
-            <p className="text-xl mt-3 text-mainBlue font-semibold">Delete a chat?</p>
+            <p className="text-xl mt-3 text-mainBlue font-semibold">
+              Delete a chat?
+            </p>
             <div className="w-full flex justify-around mt-5">
               <button
                 className="rounded-xl text-center w-32 h-8 bg-mainBlue text-white"

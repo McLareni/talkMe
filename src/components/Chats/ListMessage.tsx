@@ -7,7 +7,7 @@ import clsx from 'clsx';
 
 import Message from '../../components/Chats/Message';
 import { useAppSelector } from '../../hooks/hooks';
-import { selectUserId, selectUserPhoto } from '../../store/auth/authSelectors';
+import { selectUserId } from '../../store/auth/authSelectors';
 import { useLazyGetUserChatQuery } from '../../store/chats/operations';
 import { groupMessagesByDay } from '../../utils/groupMessage';
 import { socket } from '../Layouts/Layouts';
@@ -17,7 +17,7 @@ interface IProps {
   messagesEndRef: LegacyRef<HTMLDivElement> | undefined;
   saveMessages: (messages: IMessage | IMessage[]) => void;
   reSendMessage: (time: string, text: string) => void;
-  photoFriend: string;
+  nameFrined: string;
 }
 
 const LIMIT = 20;
@@ -26,7 +26,7 @@ const ListMessage: React.FC<IProps> = ({
   messages,
   messagesEndRef,
   saveMessages,
-  photoFriend,
+  nameFrined,
   reSendMessage,
 }) => {
   const { idChat } = useParams();
@@ -36,7 +36,6 @@ const ListMessage: React.FC<IProps> = ({
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [getMessage] = useLazyGetUserChatQuery();
-  const yourPicture = useAppSelector(selectUserPhoto);
 
   const [loadingMesssage, setLoadingMessage] = useState<boolean>(false);
 
@@ -106,8 +105,10 @@ const ListMessage: React.FC<IProps> = ({
 
   return (
     <ul className="overflow-y-scroll px-5 flex flex-col-reverse gap-2 scrollbar-hide h-[calc(100%-96px-96px)] relative">
-      {(messages.length === 0 && !loadingMesssage) && (
-        <p className="text-center mb-2">There are no messages in this chat yet</p>
+      {messages.length === 0 && !loadingMesssage && (
+        <p className="text-center mb-2">
+          There are no messages in this chat yet
+        </p>
       )}
       <div ref={messagesEndRef} id="messageEnd" />
       {Object.keys(groupedMessages).map(time => {
@@ -124,20 +125,22 @@ const ListMessage: React.FC<IProps> = ({
                 time === 'No sented' ? 'flex-col' : 'flex-col-reverse'
               )}
             >
-              {groupedMessages[time].map(message => (
-                <li key={message.sentTime}>
-                  <Message
-                    userName={message.name}
-                    sented={message.isSented}
-                    text={message.message || ''}
-                    time={message.sentTime}
-                    friendPhoto={photoFriend}
-                    isYourMessage={message.idUser === idUser}
-                    yourPhoto={yourPicture}
-                    reSend={reSendMessage}
-                  />
-                </li>
-              ))}
+              {groupedMessages[time].map(message => {
+                console.log(message);
+                
+                return (
+                  <li key={message.sentTime}>
+                    <Message
+                      sented={message.isSented}
+                      text={message.message || ''}
+                      time={message.sentTime}
+                      isYourMessage={message.idUser === idUser}
+                      reSend={reSendMessage}
+                      friendName={nameFrined}
+                    />
+                  </li>
+                );
+              })}
             </ul>
           </li>
         );

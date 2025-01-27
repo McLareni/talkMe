@@ -4,16 +4,16 @@ import { TbReload } from 'react-icons/tb';
 
 import clsx from 'clsx';
 
+import { useAppSelector } from '../../hooks/hooks';
+import { selectUser } from '../../store/auth/authSelectors';
 import { getTime } from '../../utils/formatTime';
 import ProfileImage from '../UI/ProfileImage';
 
 interface IProps {
   text: string;
   time: string;
-  userName: string
+  friendName: string;
   isYourMessage: boolean;
-  friendPhoto: string;
-  yourPhoto: string;
   sented?: 'NOT' | 'ERROR';
   reSend: (time: string, text: string) => void;
 }
@@ -21,13 +21,12 @@ interface IProps {
 const Message: React.FC<IProps> = ({
   text,
   time,
-  userName,
   isYourMessage,
-  // friendPhoto,
-  // yourPhoto,
+  friendName,
   sented,
   reSend,
 }) => {
+  const { user } = useAppSelector(selectUser);
   const handleReSend = async () => {
     reSend(time, text);
   };
@@ -60,7 +59,13 @@ const Message: React.FC<IProps> = ({
         >
           {text}
         </h2>
-        <div className='w-7 h-7 rounded-full overflow-hidden'><ProfileImage letter={userName[0]}/></div>
+
+        <div className="w-7 h-7 rounded-full overflow-hidden">
+          <ProfileImage
+            letter={isYourMessage ? user?.name[0] || '' : friendName[0] || ''}
+          />
+        </div>
+
         {/* <img
           src={isYourMessage ? yourPhoto : friendPhoto}
           className="w-7 h-7 rounded-full"
